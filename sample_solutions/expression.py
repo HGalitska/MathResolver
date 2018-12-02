@@ -1,6 +1,6 @@
 """This module evaluates mathematical expressions."""
 
-operators = set('+-/*')
+operators = set('+-/*()  ')
 
 
 def evaluate(expr: 'String expression') -> 'Result of expression':
@@ -24,10 +24,16 @@ def evaluate(expr: 'String expression') -> 'Result of expression':
     print("Operators: ", operators_in_expr)
     print("Operands: ", operands_in_expr)
 
-    pass
-
 
 # evaluate('3.2+7.5- 8*2/100+12-3')
-print(eval('3.2+7.5- 8*2/100+12-3'))
 
-# TODO: ASK без дужок і складних операторів, можна eval() ???
+
+class A:
+    def __init__(self):
+        self.one = 1
+
+
+a = A()
+print(a.one)
+a.two = 2
+print(a.two)
