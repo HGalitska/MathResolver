@@ -100,13 +100,14 @@ def evaluate(operation, *operands):
     return OPERATORS[operation][1](operands[0], operands[1])
 
 
-expression = "-7 * -3"
-postfix = infix_to_postfix(expression)
-print("postfix:", postfix)
-result = postfix_eval(postfix)
-print("actual:", result)
+def evaluate_expression(expression):
+    postfix = infix_to_postfix(expression)
+    print("postfix:", postfix)
+    result = postfix_eval(postfix)
+    print("actual:", result)
 
-print("------------------------------")
-from math import sqrt, ceil, floor, trunc
+    print("------------------------------")
+    from math import sqrt, ceil, floor, trunc
 
-print(result == eval(expression))
+    print(result == eval(expression))
+    return result
