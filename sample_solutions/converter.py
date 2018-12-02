@@ -83,10 +83,12 @@ def postfix_eval(postfix_expr):
                 operand2 = operand_stack.pop()
                 operand1 = operand_stack.pop()
                 result = evaluate(token, operand1, operand2)
+                print(operand1, token, operand2, "=>", result)
                 operand_stack.push(result)
             else:
                 operand = operand_stack.pop()
                 result = evaluate(token, operand)
+                print(token, "(", operand, ") =>", result)
                 operand_stack.push(result)
 
     return operand_stack.pop()
@@ -106,4 +108,5 @@ print("actual:", result)
 
 print("------------------------------")
 from math import sqrt, ceil, floor, trunc
+
 print(result == eval(expression))
