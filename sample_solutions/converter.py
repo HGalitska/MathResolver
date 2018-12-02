@@ -1,6 +1,3 @@
-from math import sqrt, ceil, floor, trunc
-
-
 class Stack:
     def __init__(self):
         self.items = []
@@ -22,44 +19,38 @@ class Stack:
 
 
 OPERATORS = {
-    '+': (2, lambda x, y: x + y),
-    '-': (2, lambda a, b: a - b),
-    '*': (3, lambda a, b: a * b),
-    '/': (3, lambda a, b: a / b),
-    '^': (5, lambda a, b: a ** b),
-    '**': (5, lambda a, b: a ** b),
-    '%': (3, lambda a, b: a % b),
-    'mod': (4, lambda a, b: a % b),
-    'sqrt': (4, sqrt),
-    'ceil': (4, ceil),
-    'floor': (4, floor),
-    'trunc': (4, trunc),
-    '(': (1, 0),
-    ')': (1, 0),
-    '>': (0, 0),
-    '<': (0, 0),
-    '>=': (0, 0),
-    '<=': (0, 0)
+    '+': [2, lambda x, y: x + y, 2],
+    '-': [2, lambda a, b: a - b, 2],
+    '*': [3, lambda a, b: a * b, 2],
+    '/': [3, lambda a, b: a / b, 2],
+    '^': [5, lambda a, b: a ** b, 2],
+    '**': [5, lambda a, b: a ** b, 2],
+    '%': [3, lambda a, b: a % b, 2],
+    'sqrt': [4, 0, 1],
+    'ceil': [4, 0, 1],
+    'floor': [4, 0, 1],
+    'trunc': [4, 0, 1],
+    '(': [1, 0, 0],
+    ')': [1, 0, 0],
+    '>': [0, 0, 2],
+    '<': [0, 0, 2],
+    '>=': [0, 0, 2],
+    '<=': [0, 0, 2]
 }
+
+MATH_FUNCTIONS = ['sqrt', 'ceil', 'floor', 'trunc']
 
 
 def infix_to_postfix(infix_expr):
-    # precedence = dict()
-    # precedence["^"] = 4
-    # precedence["^"] = 4
-    # precedence["*"] = 3
-    # precedence["/"] = 3
-    # precedence["+"] = 2
-    # precedence["-"] = 2
-    # precedence["("] = 1
-
     stack = Stack()
     postfix_list = list()
     token_list = infix_expr.split()
-    print(token_list)
 
     for token in token_list:
-        print(stack.items)
+        if token in MATH_FUNCTIONS:
+            import math
+            OPERATORS[token][1] = getattr(math, token)
+
         if token not in OPERATORS:
             postfix_list.append(token)
         elif token == '(':
@@ -79,4 +70,40 @@ def infix_to_postfix(infix_expr):
     return " ".join(postfix_list)
 
 
-print(infix_to_postfix("a <= 4 + ceil ( 5.4 )"))
+def postfix_eval(postfix_expr):
+    operand_stack = Stack()
+
+    token_list = postfix_expr.split()
+
+    for token in token_list:
+        if token not in OPERATORS:
+            operand_stack.push(float(token))
+        else:
+            if OPERATORS[token][2] == 2:
+                operand2 = operand_stack.pop()
+                operand1 = operand_stack.pop()
+                result = evaluate(token, operand1, operand2)
+                operand_stack.push(result)
+            else:
+                operand = operand_stack.pop()
+                result = evaluate(token, operand)
+                operand_stack.push(result)
+
+    return operand_stack.pop()
+
+
+def evaluate(operation, *operands):
+    if len(operands) == 1:
+        return OPERATORS[operation][1](operands[0])
+    return OPERATORS[operation][1](operands[0], operands[1])
+
+
+expression = "3 + 7 % 34 - trunc ( 6.3 ** 2 ) + sqrt ( 4 ) + 50"
+postfix = infix_to_postfix(expression)
+print("postfix:", postfix)
+result = postfix_eval(postfix)
+print("actual:", result)
+
+print("------------------------------")
+from math import sqrt, ceil, floor, trunc
+print(result == eval(expression))
