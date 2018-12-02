@@ -32,10 +32,10 @@ OPERATORS = {
     'trunc': [4, 0, 1],
     '(': [1, 0, 0],
     ')': [1, 0, 0],
-    '>': [0, 0, 2],
-    '<': [0, 0, 2],
-    '>=': [0, 0, 2],
-    '<=': [0, 0, 2]
+    '>': [0, lambda a, b: a > b, 2, 2],
+    '<': [0, lambda a, b: a < b, 2],
+    '>=': [0, lambda a, b: a >= b, 2],
+    '<=': [0, lambda a, b: a <= b, 2]
 }
 
 MATH_FUNCTIONS = ['sqrt', 'ceil', 'floor', 'trunc']
@@ -100,7 +100,7 @@ def evaluate(operation, *operands):
     return OPERATORS[operation][1](operands[0], operands[1])
 
 
-expression = "3 + 7 % 34 - trunc ( 6.3 ** 2 ) + sqrt ( 4 ) + 50"
+expression = "-7 * -3"
 postfix = infix_to_postfix(expression)
 print("postfix:", postfix)
 result = postfix_eval(postfix)
