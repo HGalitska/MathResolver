@@ -1,4 +1,6 @@
 from math import sqrt, ceil, floor, trunc
+
+
 class Stack:
     def __init__(self):
         self.items = []
@@ -32,7 +34,12 @@ OPERATORS = {
     'ceil': (4, ceil),
     'floor': (4, floor),
     'trunc': (4, trunc),
-    '(': (1, 0)
+    '(': (1, 0),
+    ')': (1, 0),
+    '>': (0, 0),
+    '<': (0, 0),
+    '>=': (0, 0),
+    '<=': (0, 0)
 }
 
 
@@ -53,7 +60,7 @@ def infix_to_postfix(infix_expr):
 
     for token in token_list:
         print(stack.items)
-        if token in "0123456789":
+        if token not in OPERATORS:
             postfix_list.append(token)
         elif token == '(':
             stack.push(token)
@@ -72,4 +79,4 @@ def infix_to_postfix(infix_expr):
     return " ".join(postfix_list)
 
 
-print(infix_to_postfix("8 + mod ( 3 + 2 * 4 )"))
+print(infix_to_postfix("a <= 4 + ceil ( 5.4 )"))
