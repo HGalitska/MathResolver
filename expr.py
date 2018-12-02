@@ -100,7 +100,7 @@ def evaluate(operation, *operands):
     return OPERATORS[operation][1](operands[0], operands[1])
 
 
-def evaluate_expression(expression):
+def solve(expression):
     postfix = infix_to_postfix(expression)
     # print("postfix:", postfix)
     result = postfix_eval(postfix)
