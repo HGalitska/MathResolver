@@ -102,9 +102,9 @@ def evaluate(operation, *operands):
 
 def evaluate_expression(expression):
     postfix = infix_to_postfix(expression)
-    print("postfix:", postfix)
+    # print("postfix:", postfix)
     result = postfix_eval(postfix)
-    print("actual:", result)
+    print("result:", result)
 
     print("------------------------------")
     from math import sqrt, ceil, floor, trunc
