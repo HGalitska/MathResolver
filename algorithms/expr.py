@@ -1,3 +1,7 @@
+import module_manager as mm
+import solutions.expr as expr
+
+
 class Stack:
     def __init__(self):
         self.items = []
@@ -26,16 +30,12 @@ OPERATORS = {
     '^': [5, lambda a, b: a ** b, 2],
     '**': [5, lambda a, b: a ** b, 2],
     '%': [3, lambda a, b: a % b, 2],
-    'sqrt': [4, 0, 1],
-    'ceil': [4, 0, 1],
-    'floor': [4, 0, 1],
-    'trunc': [4, 0, 1],
+    'sqrt': [4, None, 1],
+    'ceil': [4, None, 1],
+    'floor': [4, None, 1],
+    'trunc': [4, None, 1],
     '(': [1, 0, 0],
-    ')': [1, 0, 0],
-    '>': [0, lambda a, b: a > b, 2, 2],
-    '<': [0, lambda a, b: a < b, 2],
-    '>=': [0, lambda a, b: a >= b, 2],
-    '<=': [0, lambda a, b: a <= b, 2]
+    ')': [1, 0, 0]
 }
 
 MATH_FUNCTIONS = ['sqrt', 'ceil', 'floor', 'trunc']
@@ -48,8 +48,8 @@ def infix_to_postfix(infix_expr):
 
     for token in token_list:
         if token in MATH_FUNCTIONS:
-            import math
-            OPERATORS[token][1] = getattr(math, token)
+            exec("from math import " + token + " as func")
+            exec("OPERATORS[token][1] = func")
 
         if token not in OPERATORS:
             postfix_list.append(token)
@@ -70,7 +70,7 @@ def infix_to_postfix(infix_expr):
     return " ".join(postfix_list)
 
 
-def postfix_eval(postfix_expr):
+def eval_postfix(postfix_expr, module_path):
     operand_stack = Stack()
 
     token_list = postfix_expr.split()
@@ -82,32 +82,34 @@ def postfix_eval(postfix_expr):
             if OPERATORS[token][2] == 2:
                 operand2 = operand_stack.pop()
                 operand1 = operand_stack.pop()
-                result = evaluate(token, operand1, operand2)
-                print(operand1, token, operand2, "=>", result)
+                result = eval_simple_operation(token, operand1, operand2)
+                mm.add_to_doc(module_path, "\n" + str(operand1) + str(token) + str(operand2) + " => " + str(result))
                 operand_stack.push(result)
             else:
                 operand = operand_stack.pop()
-                result = evaluate(token, operand)
-                print(token, "(", operand, ") =>", result)
+                result = eval_simple_operation(token, operand)
+                mm.add_to_doc(module_path, "\n" + str(token) + "(" + str(operand) + ") => " + str(result))
                 operand_stack.push(result)
 
     return operand_stack.pop()
 
 
-def evaluate(operation, *operands):
+def eval_simple_operation(operation, *operands):
     if len(operands) == 1:
-        return OPERATORS[operation][1](operands[0])
-    return OPERATORS[operation][1](operands[0], operands[1])
+        return float(format(OPERATORS[operation][1](operands[0]), '.2f'))
+    return float(format(OPERATORS[operation][1](operands[0], operands[1]), '.2f'))
 
 
 def solve(expression):
+    module = mm.generate_module_name(expr, expression)
+    mm.add_new_module(expr, module)
+    module_path = mm.get_path(expr, module)
+    mm.open_doc_string(module_path, expression)
+
     postfix = infix_to_postfix(expression)
-    # print("postfix:", postfix)
-    result = postfix_eval(postfix)
-    print("result:", result)
+    result = eval_postfix(postfix, module_path)
 
-    print("------------------------------")
-    from math import sqrt, ceil, floor, trunc
+    mm.add_to_doc(module_path, "\nresult: " + format(result, '.2f'))
+    mm.close_doc_string(module_path)
+    mm.print_doc(module_path)
 
-    print(result == eval(expression))
-    return result
