@@ -113,3 +113,5 @@ def solve(expression):
     mm.close_doc_string(module_path)
     mm.print_doc(module_path)
 
+    return result
+

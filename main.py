@@ -23,7 +23,7 @@ def do_work():
     expression = input("Enter mathematical expression.\n"
                        "Put ' ' around every operation and operand.\n"
                        "You can use mathematical functions like 'sqrt ( 4 )'.\n"
-                       "For simple ineq use 'x' as root to be find.\n"
+                       "For simple ineq use '( expr ) x > expr' syntax.\n"
                        "For ineq with parameter use 'a' for parameter.\n"
                        "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
                        "where a, b, c are actual numbers.\n\n"
