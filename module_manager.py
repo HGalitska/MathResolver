@@ -58,8 +58,8 @@ def close_doc_string(path, package, expression):
     module_file = open(path, "a")
     module_file.write('\n"""\n')
     module_file.write("if __name__ == '__main__':\n")
-    module_file.write('     from ' + package.__name__.replace('solutions', 'algorithms') + ' import solve\n')
-    module_file.write('     solve("' + expression + '")\n')
+    module_file.write('    from ' + package.__name__.replace('solutions', 'algorithms') + ' import solve\n\n')
+    module_file.write('    solve("' + expression + '")\n')
     module_file.close()
 
 
