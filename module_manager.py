@@ -16,7 +16,7 @@ def generate_module_name(package, expression):
 
 
 def get_modules_for_expr(package, expression, prefix_flag=False):
-    prefix = str(len(expression.split())) + "_"
+    prefix = str(len(expression)) + "_"
     modules = get_modules(package)
     same_length_names = []
 
@@ -54,9 +54,12 @@ def open_doc_string(path, expression):
     module_file.close()
 
 
-def close_doc_string(path):
+def close_doc_string(path, package, expression):
     module_file = open(path, "a")
-    module_file.write('\n"""')
+    module_file.write('\n"""\n')
+    module_file.write("if __name__ == '__main__':\n")
+    module_file.write('     from ' + package.__name__.replace('solutions', 'algorithms') + ' import solve\n')
+    module_file.write('     solve("' + expression + '")\n')
     module_file.close()
 
 
@@ -67,6 +70,7 @@ def add_to_doc(path, string):
 
 
 def print_doc(path):
+    print(path.split())
     module_file = open(path, "r")
     print(module_file.read().replace('"""', ''))
     module_file.close()

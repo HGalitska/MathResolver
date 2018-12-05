@@ -70,5 +70,5 @@ def solve(expression):
     else:
         mm.add_to_doc(module_path, "Operation undefined.")
 
-    mm.close_doc_string(module_path)
+    mm.close_doc_string(module_path, ineq, expression)
     mm.print_doc(module_path)

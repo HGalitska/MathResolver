@@ -2,7 +2,7 @@ from math import sqrt, trunc, copysign
 from numpy import roots
 
 import module_manager as mm
-import solutions.quadr_eq as quadratic_equations
+import solutions.quadr_eq as quadr_eq
 
 
 # a * x^2 + b * x + c = 0
@@ -20,9 +20,9 @@ def get_abc(expression):
 
 
 def solve(expression):
-    module = mm.generate_module_name(quadratic_equations, expression)
-    mm.add_new_module(quadratic_equations, module)
-    module_path = mm.get_path(quadratic_equations, module)
+    module = mm.generate_module_name(quadr_eq, expression)
+    mm.add_new_module(quadr_eq, module)
+    module_path = mm.get_path(quadr_eq, module)
     mm.open_doc_string(module_path, expression)
 
     abc = get_abc(expression)
@@ -39,7 +39,7 @@ def solve(expression):
 
     if d < 0:
         mm.add_to_doc(module_path, "\n!!! No roots.")
-        mm.close_doc_string(module_path)
+        mm.close_doc_string(module_path, quadr_eq, expression)
         mm.print_doc(module_path)
         return
 
@@ -53,5 +53,5 @@ def solve(expression):
     mm.add_to_doc(module_path, "\n" + format(roots(abc)[0], '.2f'))
     mm.add_to_doc(module_path, "\n" + format(roots(abc)[1], '.2f'))
 
-    mm.close_doc_string(module_path)
+    mm.close_doc_string(module_path, quadr_eq, expression)
     mm.print_doc(module_path)

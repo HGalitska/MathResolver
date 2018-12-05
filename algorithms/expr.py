@@ -83,7 +83,7 @@ def eval_postfix(postfix_expr, module_path):
                 operand2 = operand_stack.pop()
                 operand1 = operand_stack.pop()
                 result = eval_simple_operation(token, operand1, operand2)
-                mm.add_to_doc(module_path, "\n" + str(operand1) + str(token) + str(operand2) + " => " + str(result))
+                mm.add_to_doc(module_path, "\n" + str(operand1) + " "+ str(token) + " " + str(operand2) + " => " + str(result))
                 operand_stack.push(result)
             else:
                 operand = operand_stack.pop()
@@ -110,7 +110,7 @@ def solve(expression):
     if postfix is not None:
         result = eval_postfix(postfix, module_path)
         mm.add_to_doc(module_path, "\nresult: " + format(result, '.2f'))
-        mm.close_doc_string(module_path)
+        mm.close_doc_string(module_path, expr, expression)
         mm.print_doc(module_path)
         return result
     else:
