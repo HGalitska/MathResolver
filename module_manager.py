@@ -36,6 +36,8 @@ def find_solution(package, expression):
     for module_name in modules:
         module = importlib.import_module(package.__name__ + "." + module_name)
         doc = module.__doc__
+        if doc == "":
+            return None
         if expression in doc:
             print("Already have it!", doc)
             return doc
@@ -67,5 +69,11 @@ def add_to_doc(path, string):
 def print_doc(path):
     module_file = open(path, "r")
     print(module_file.read().replace('"""', ''))
+    module_file.close()
+
+
+def clear_doc(path):
+    module_file = open(path, "w")
+    module_file.write("")
     module_file.close()
 

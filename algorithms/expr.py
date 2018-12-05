@@ -51,7 +51,7 @@ def infix_to_postfix(infix_expr):
             exec("from math import " + token + " as func")
             exec("OPERATORS[token][1] = func")
 
-        if token not in OPERATORS:
+        if token not in OPERATORS and token.isnumeric():
             postfix_list.append(token)
         elif token == '(':
             stack.push(token)
@@ -107,11 +107,15 @@ def solve(expression):
     mm.open_doc_string(module_path, expression)
 
     postfix = infix_to_postfix(expression)
-    result = eval_postfix(postfix, module_path)
+    if postfix is not None:
+        result = eval_postfix(postfix, module_path)
+        mm.add_to_doc(module_path, "\nresult: " + format(result, '.2f'))
+        mm.close_doc_string(module_path)
+        mm.print_doc(module_path)
+        return result
+    else:
+        mm.clear_doc(module_path)
+        print("Some error. Try again!")
 
-    mm.add_to_doc(module_path, "\nresult: " + format(result, '.2f'))
-    mm.close_doc_string(module_path)
-    mm.print_doc(module_path)
 
-    return result
 
