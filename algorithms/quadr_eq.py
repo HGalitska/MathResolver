@@ -30,8 +30,10 @@ def solve(expression):
     b = abc[1]
     c = abc[2]
 
-    mm.add_to_doc(module_path, "\na: " + str(a) + "b: " + str(b) + "c: " + str(c))
+    mm.add_to_doc(module_path, "Get coefficients:\n")
+    mm.add_to_doc(module_path, "\na: " + str(a) + "\nb: " + str(b) + "\nc: " + str(c))
 
+    mm.add_to_doc(module_path, "Compute discriminant:\n")
     d = b ** 2 - 4 * a * c
     mm.add_to_doc(module_path, "\nd = b^2 - 4 * a * c = "
                   + str(b) + "^2 - 4 * " + str(a) + " * " + str(c) + " = "
@@ -43,15 +45,21 @@ def solve(expression):
         mm.print_doc(module_path)
         return
 
+    if d == 0:
+        mm.add_to_doc(module_path, "\nOnly one root:")
+        sol = (-b) / (2 * a)
+        mm.add_to_doc(module_path, "\nx1 = " + "(-b - sqrt(d)) / (2 * a) = " + format(sol, '.2f'))
+        mm.close_doc_string(module_path, quadr_eq, expression)
+        mm.print_doc(module_path)
+        return
+
     sol1 = (-b - sqrt(d)) / (2 * a)
     sol2 = (-b + sqrt(d)) / (2 * a)
 
+    mm.add_to_doc(module_path, "Compute first root:\n")
     mm.add_to_doc(module_path, "\nx1 = " + "(-b - sqrt(d)) / (2 * a) = " + format(sol1, '.2f'))
+    mm.add_to_doc(module_path, "Compute second root:\n")
     mm.add_to_doc(module_path, "\nx2 = " + "(-b + sqrt(d)) / (2 * a) = " + format(sol2, '.2f'))
-
-    mm.add_to_doc(module_path, "\n---------------------------------")
-    mm.add_to_doc(module_path, "\n" + format(roots(abc)[0], '.2f'))
-    mm.add_to_doc(module_path, "\n" + format(roots(abc)[1], '.2f'))
 
     mm.close_doc_string(module_path, quadr_eq, expression)
     mm.print_doc(module_path)

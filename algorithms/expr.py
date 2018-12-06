@@ -75,6 +75,8 @@ def eval_postfix(postfix_expr, module_path):
 
     token_list = postfix_expr.split()
 
+    mm.add_to_doc(module_path, "\nCompute individual results:")
+
     for token in token_list:
         if token not in OPERATORS:
             operand_stack.push(float(token))
@@ -109,7 +111,7 @@ def solve(expression):
     postfix = infix_to_postfix(expression)
     if postfix is not None:
         result = eval_postfix(postfix, module_path)
-        mm.add_to_doc(module_path, "\nresult: " + format(result, '.2f'))
+        mm.add_to_doc(module_path, "\nResult: " + format(result, '.2f'))
         mm.close_doc_string(module_path, expr, expression)
         mm.print_doc(module_path)
         return result

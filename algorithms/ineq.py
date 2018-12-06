@@ -49,10 +49,16 @@ def solve(expression):
 
     left_result = expr.solve(left_part)
     right_result = expr.solve(right_part)
+    mm.add_to_doc(module_path, "Compute expression in left part:\n")
     mm.add_to_doc(module_path, left_part + "x = " + format(left_result, '.2f') + "x\n")
+
+    mm.add_to_doc(module_path, "\nCompute expression in right part:\n")
     mm.add_to_doc(module_path, right_part + " = " + format(right_result, '.2f') + '\n')
+
+    mm.add_to_doc(module_path, "Came to:\n")
     mm.add_to_doc(module_path, format(left_result, '.2f') + "x " + operation[0] + "  " + format(right_result, '.2f') + '\n')
 
+    mm.add_to_doc(module_path, "Result:\n")
     if left_result == 0:
         if right_result == 0:
             mm.add_to_doc(module_path, 'x is any')
