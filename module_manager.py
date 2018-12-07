@@ -71,15 +71,13 @@ def add_to_doc(path, string):
 
 
 def print_doc(path):
-    print(path.split())
     module_file = open(path, "r")
     lines = module_file.readlines()
-    lines[0].replace('"""', '')
     for line in lines:
-        if line == '"""':
+        if line == "if __name__ == '__main__':\n":
             module_file.close()
             return
-        print(line)
+        print(line.replace('"""', ''))
     module_file.close()
 
 
