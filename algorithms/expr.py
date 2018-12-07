@@ -1,6 +1,8 @@
 import module_manager as mm
 import solutions.expr as expr
 
+import math
+
 
 class Stack:
     def __init__(self):
@@ -30,15 +32,11 @@ OPERATORS = {
     '^': [5, lambda a, b: a ** b, 2],
     '**': [5, lambda a, b: a ** b, 2],
     '%': [3, lambda a, b: a % b, 2],
-    'sqrt': [4, None, 1],
-    'ceil': [4, None, 1],
-    'floor': [4, None, 1],
-    'trunc': [4, None, 1],
     '(': [1, 0, 0],
     ')': [1, 0, 0]
 }
 
-MATH_FUNCTIONS = ['sqrt', 'ceil', 'floor', 'trunc']
+MATH_FUNCTIONS = list(func for func in dir(math) if func[0] != '_')
 
 
 def infix_to_postfix(infix_expr):
@@ -48,10 +46,16 @@ def infix_to_postfix(infix_expr):
 
     for token in token_list:
         if token in MATH_FUNCTIONS:
+            exec("from inspect import signature")
             exec("from math import " + token + " as func")
-            exec("OPERATORS[token][1] = func")
+            exec("")
+            exec("OPERATORS[token] = []")
+            exec("OPERATORS[token].append(4)")
+            exec("OPERATORS[token].append(func)")
+            exec("OPERATORS[token].append(len(signature(func).parameters) - 1)")
+            # stack.push(token)
 
-        if token not in OPERATORS and token.isnumeric():
+        if token not in OPERATORS:
             postfix_list.append(token)
         elif token == '(':
             stack.push(token)
@@ -85,7 +89,8 @@ def eval_postfix(postfix_expr, module_path):
                 operand2 = operand_stack.pop()
                 operand1 = operand_stack.pop()
                 result = eval_simple_operation(token, operand1, operand2)
-                mm.add_to_doc(module_path, "\n" + str(operand1) + " "+ str(token) + " " + str(operand2) + " => " + str(result))
+                mm.add_to_doc(module_path,
+                              "\n" + str(operand1) + " " + str(token) + " " + str(operand2) + " => " + str(result))
                 operand_stack.push(result)
             else:
                 operand = operand_stack.pop()
@@ -102,7 +107,7 @@ def eval_simple_operation(operation, *operands):
     return float(format(OPERATORS[operation][1](operands[0], operands[1]), '.2f'))
 
 
-def solve(expression):
+def solve(expression, log=True):
     module = mm.generate_module_name(expr, expression)
     mm.add_new_module(expr, module)
     module_path = mm.get_path(expr, module)
@@ -113,11 +118,13 @@ def solve(expression):
         result = eval_postfix(postfix, module_path)
         mm.add_to_doc(module_path, "\nResult: " + format(result, '.2f'))
         mm.close_doc_string(module_path, expr, expression)
-        mm.print_doc(module_path)
+        if log:
+            mm.print_doc(module_path)
         return result
     else:
         mm.clear_doc(module_path)
         print("Some error. Try again!")
 
 
-
+if __name__ == "__main__":
+    solve("( 4 + 3 + floor ( 6.4 ) )")

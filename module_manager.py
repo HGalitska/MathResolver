@@ -50,7 +50,8 @@ def get_path(package, module):
 
 def open_doc_string(path, expression):
     module_file = open(path, "w")
-    module_file.write('"""\n' + expression + '\n')
+    module_file.write('"""\n' + expression + '\n'
+                                             '-------------------------------------------------\n')
     module_file.close()
 
 
@@ -59,7 +60,7 @@ def close_doc_string(path, package, expression):
     module_file.write('\n"""\n')
     module_file.write("if __name__ == '__main__':\n")
     module_file.write('    from ' + package.__name__.replace('solutions', 'algorithms') + ' import solve\n\n')
-    module_file.write('    solve("' + expression + '")\n')
+    module_file.write('    solve("' + expression + '")\n# -------------------------------------------------\n')
     module_file.close()
 
 
@@ -72,7 +73,13 @@ def add_to_doc(path, string):
 def print_doc(path):
     print(path.split())
     module_file = open(path, "r")
-    print(module_file.read().replace('"""', ''))
+    lines = module_file.readlines()
+    lines[0].replace('"""', '')
+    for line in lines:
+        if line == '"""':
+            module_file.close()
+            return
+        print(line)
     module_file.close()
 
 
@@ -80,4 +87,3 @@ def clear_doc(path):
     module_file = open(path, "w")
     module_file.write("")
     module_file.close()
-

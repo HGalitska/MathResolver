@@ -33,7 +33,7 @@ def solve(expression):
     mm.add_to_doc(module_path, "Get coefficients:\n")
     mm.add_to_doc(module_path, "\na: " + str(a) + "\nb: " + str(b) + "\nc: " + str(c))
 
-    mm.add_to_doc(module_path, "Compute discriminant:\n")
+    mm.add_to_doc(module_path, "\nCompute discriminant:\n")
     d = b ** 2 - 4 * a * c
     mm.add_to_doc(module_path, "\nd = b^2 - 4 * a * c = "
                   + str(b) + "^2 - 4 * " + str(a) + " * " + str(c) + " = "
@@ -56,9 +56,9 @@ def solve(expression):
     sol1 = (-b - sqrt(d)) / (2 * a)
     sol2 = (-b + sqrt(d)) / (2 * a)
 
-    mm.add_to_doc(module_path, "Compute first root:\n")
+    mm.add_to_doc(module_path, "\nCompute first root:\n")
     mm.add_to_doc(module_path, "\nx1 = " + "(-b - sqrt(d)) / (2 * a) = " + format(sol1, '.2f'))
-    mm.add_to_doc(module_path, "Compute second root:\n")
+    mm.add_to_doc(module_path, "\nCompute second root:\n")
     mm.add_to_doc(module_path, "\nx2 = " + "(-b + sqrt(d)) / (2 * a) = " + format(sol2, '.2f'))
 
     mm.close_doc_string(module_path, quadr_eq, expression)

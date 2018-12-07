@@ -4,7 +4,7 @@ import module_manager, importlib
 def who_is(expr):
     if 'x^2' in expr:
         return 'quadratic equation.', 'quadr_eq'
-    elif 'a' in expr:
+    elif 'a' in expr and ('>' in expr or '<' in expr or '>=' in expr or '<=' in expr):
         return 'inequality with parameter.', 'param_ineq'
     elif '>' in expr or '<' in expr or '>=' in expr or '<=' in expr:
         return 'inequality.', 'ineq'
@@ -24,7 +24,8 @@ def do_work():
                        "Put ' ' around every operation and operand.\n"
                        "You can use mathematical functions like 'sqrt ( 4 )'.\n"
                        "For simple ineq use '( expr ) x > expr' syntax.\n"
-                       "For ineq with parameter use 'a' for parameter.\n"
+                       "For ineq with parameter: "
+                       "( expr_x) x ( operation ) ( expr_a ) a >==< ( expr ) : [min, max].\n"
                        "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
                        "where a, b, c are actual numbers.\n\n"
                        "To read from file enter 'FILE'.\n\n")

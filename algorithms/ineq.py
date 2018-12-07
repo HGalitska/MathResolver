@@ -35,7 +35,7 @@ def minus_to_negative(string_expression):
     return result
 
 
-def solve(expression):
+def solve(expression, log=True):
     module = mm.generate_module_name(ineq, expression)
     mm.add_new_module(ineq, module)
     module_path = mm.get_path(ineq, module)
@@ -43,12 +43,11 @@ def solve(expression):
 
     operation = get_operation(expression)
 
-    print(expression[:operation[1] - 2])
     left_part = expression[:operation[1] - 2]
     right_part = expression[operation[1] + 1:]
 
-    left_result = expr.solve(left_part)
-    right_result = expr.solve(right_part)
+    left_result = expr.solve(left_part, log)
+    right_result = expr.solve(right_part, log)
     mm.add_to_doc(module_path, "Compute expression in left part:\n")
     mm.add_to_doc(module_path, left_part + "x = " + format(left_result, '.2f') + "x\n")
 
@@ -56,7 +55,8 @@ def solve(expression):
     mm.add_to_doc(module_path, right_part + " = " + format(right_result, '.2f') + '\n')
 
     mm.add_to_doc(module_path, "Came to:\n")
-    mm.add_to_doc(module_path, format(left_result, '.2f') + "x " + operation[0] + "  " + format(right_result, '.2f') + '\n')
+    mm.add_to_doc(module_path,
+                  format(left_result, '.2f') + "x " + operation[0] + "  " + format(right_result, '.2f') + '\n')
 
     mm.add_to_doc(module_path, "Result:\n")
     if left_result == 0:
@@ -65,16 +65,26 @@ def solve(expression):
         else:
             mm.add_to_doc(module_path, 'has no roots')
 
+    result = ""
+    inv_oper = ''
     if operation[0] == '>':
-        mm.add_to_doc(module_path, 'x < ' + str(right_result / left_result))
+        inv_oper = '<'
     elif operation[0] == '>=':
-        mm.add_to_doc(module_path, 'x <= ' + str(right_result / left_result))
+        inv_oper = '<='
     elif operation[0] == '<':
-        mm.add_to_doc(module_path, 'x > ' + str(right_result / left_result))
+        inv_oper = '>'
     elif operation[0] == '<=':
-        mm.add_to_doc(module_path, 'x >= ' + str(right_result / left_result))
+        inv_oper = '>='
     else:
         mm.add_to_doc(module_path, "Operation undefined.")
+        mm.close_doc_string(module_path, ineq, expression)
+        mm.print_doc(module_path)
+        return "Operation undefined."
 
+    result = "x " + inv_oper + " " + str(right_result / left_result)
+    mm.add_to_doc(module_path, result)
     mm.close_doc_string(module_path, ineq, expression)
-    mm.print_doc(module_path)
+    if log:
+        mm.print_doc(module_path)
+
+    return result
