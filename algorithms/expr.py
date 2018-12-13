@@ -53,14 +53,13 @@ def infix_to_postfix(infix_expr):
             exec("OPERATORS[token].append(4)")
             exec("OPERATORS[token].append(func)")
             exec("OPERATORS[token].append(len(signature(func).parameters) - 1)")
-            # stack.push(token)
 
         if token not in OPERATORS:
             try:
                 token = float(token)
             except ValueError:
                 return None
-            postfix_list.append(token)
+            postfix_list.append(float(token))
         elif token == '(':
             stack.push(token)
         elif token == ')':
@@ -75,7 +74,7 @@ def infix_to_postfix(infix_expr):
 
     while not stack.is_empty():
         postfix_list.append(stack.pop())
-    return " ".join(postfix_list)
+    return " ".join(str(v) for v in postfix_list)
 
 
 def eval_postfix(postfix_expr, module_path):
@@ -86,27 +85,27 @@ def eval_postfix(postfix_expr, module_path):
     mm.add_to_doc(module_path, "\n1. Compute individual results:")
 
     for token in token_list:
-        operand_stack.push(float(token))
-    else:
-        if OPERATORS[token][2] == 2:
-            operand2 = operand_stack.pop()
-            operand1 = operand_stack.pop()
-            result = eval_simple_operation(token, operand1, operand2)
-            mm.add_to_doc(module_path,
-                          "\n" + str(operand1) + " " + str(token) + " " + str(operand2) + " => " + str(result))
-            operand_stack.push(result)
+        if token not in OPERATORS:
+            operand_stack.push(float(token))
         else:
-            operand = operand_stack.pop()
-            result = eval_simple_operation(token, operand)
-            mm.add_to_doc(module_path, "\n" + str(token) + "(" + str(operand) + ") => " + str(result))
-            operand_stack.push(result)
+            if OPERATORS[token][2] == 2:
+                operand2 = operand_stack.pop()
+                operand1 = operand_stack.pop()
+                result = eval_simple_operation(token, operand1, operand2)
+                mm.add_to_doc(module_path,
+                              "\n" + str(operand1) + " " + str(token) + " " + str(operand2) + " => " + str(result))
+                operand_stack.push(result)
+            else:
+                operand = operand_stack.pop()
+                result = eval_simple_operation(token, operand)
+                mm.add_to_doc(module_path, "\n" + str(token) + "(" + str(operand) + ") => " + str(result))
+                operand_stack.push(result)
 
     return operand_stack.pop()
 
 
 def eval_simple_operation(operation, *operands):
     if len(operands) == 1:
-        print(OPERATORS[operation][1])
         return float(format(OPERATORS[operation][1](operands[0]), '.2f'))
     return float(format(OPERATORS[operation][1](operands[0], operands[1]), '.2f'))
 

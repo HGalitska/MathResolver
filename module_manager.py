@@ -9,7 +9,7 @@ def add_new_module(package, module):
 def delete_module(package, module):
     all_modules = [x for x in package.__all__ if x != module]
 
-    module_file = r'' + package.__name__.replace(".", "/") + "/" + module + ".py"
+    module_file = r'' + package.__name__.replace(".", "/") + r"/" + module + r".py"
     import os
     os.remove(module_file)
     package_init = open(r"" + package.__name__.replace(".", "/") + "/__init__.py", "w")

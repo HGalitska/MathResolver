@@ -47,8 +47,7 @@ def solve(expression, log=True):
     operation = get_operation(expression)
 
     left_part = expression[:operation[1] - 2]
-    right_part = expression[operation[1] + 2:]
-    print(right_part)
+    right_part = expression[operation[1] + 3:]
 
     left_result = expr.solve(left_part, log)
     right_result = expr.solve(right_part, log)
@@ -56,6 +55,7 @@ def solve(expression, log=True):
     mm.add_to_doc(module_path, left_part + "x = " + format(left_result, '.2f') + "x\n")
 
     mm.add_to_doc(module_path, "\n2. Compute expression in right part:\n")
+    print(right_result)
     mm.add_to_doc(module_path, right_part + " = " + format(right_result, '.2f') + '\n')
 
     mm.add_to_doc(module_path, "3. Came to:\n")
