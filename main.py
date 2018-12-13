@@ -1,12 +1,13 @@
 import module_manager, importlib
+import re
 
 
 def who_is(expr):
-    if 'x^2' in expr:
+    if re.match(r'([-+]?[0-9]*\.?[0-9]+)\s\*\sx\^2\s[+-]\s([-+]?[0-9]*\.?[0-9]+)\s\*\sx\s[+-]\s([-+]?[0-9]*\.?[0-9]+)\s=\s0', expr):
         return 'quadratic equation.', 'quadr_eq'
-    elif 'a' in expr and ('>' in expr or '<' in expr or '>=' in expr or '<=' in expr):
+    elif re.match(r'\(\s+.+\s+\)\s+x\s+[+-/*]\s+\(\s+.+\s+\)\s+a\s+[><]=?\s+\(\s+.+\s+\)\s+:\s\[\s-?[0-9]*\s,\s-?[0-9]*\s\]', expr):
         return 'inequality with parameter.', 'param_ineq'
-    elif '>' in expr or '<' in expr or '>=' in expr or '<=' in expr:
+    elif re.match(r'\(\s+.+\s+\)\s+x\s+[><]=?\s+.+', expr):
         return 'inequality.', 'ineq'
     else:
         return 'expression with result.', 'expr'
@@ -30,6 +31,7 @@ def do_work():
                        "where a, b, c are actual numbers.\n\n"
                        "To read from file enter 'FILE'.\n\n")
 
+    print(expression)
     if expression == 'FILE':
         file = open('input.txt', 'r')
         expression = file.read()
@@ -39,10 +41,11 @@ def do_work():
     type_id = who_is(expression)[1]
     print('Expression is', description)
 
-    exec("import algorithms." + type_id + " as algo_package")
-    exec("import solutions." + type_id + " as solution_package")
-    exec("solution = module_manager.find_solution(solution_package, expression)")
-    exec("if solution is None: algo_package.solve(expression)")
+    exec ("import algorithms." + type_id + " as algo_package")
+    exec ("import solutions." + type_id + " as solution_package")
+    exec ("solution = module_manager.find_solution(solution_package, expression)")
+    exec ("if solution is None: algo_package.solve(expression)")
 
 
-do_work()
+if __name__ == "__main__":
+    do_work()

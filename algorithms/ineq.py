@@ -2,14 +2,17 @@ from algorithms import expr as expr
 import solutions.ineq as ineq
 import module_manager as mm
 
-SIGNS = [">", "<", ">=", "<="]
+SIGNS = [">", "<"]
 
 
 def get_operation(expression):
     operation = tuple()
-    for char in expression:
+    for i in range(len(expression)):
+        char = expression[i]
         if char in SIGNS:
             sign_index = expression.index(char)
+            if expression[i + 1] == "=":
+                char = char + "="
             operation = (char, sign_index)
     return operation
 
@@ -44,26 +47,28 @@ def solve(expression, log=True):
     operation = get_operation(expression)
 
     left_part = expression[:operation[1] - 2]
-    right_part = expression[operation[1] + 1:]
+    right_part = expression[operation[1] + 2:]
+    print(right_part)
 
     left_result = expr.solve(left_part, log)
     right_result = expr.solve(right_part, log)
-    mm.add_to_doc(module_path, "Compute expression in left part:\n")
+    mm.add_to_doc(module_path, "1. Compute expression in left part:\n")
     mm.add_to_doc(module_path, left_part + "x = " + format(left_result, '.2f') + "x\n")
 
-    mm.add_to_doc(module_path, "\nCompute expression in right part:\n")
+    mm.add_to_doc(module_path, "\n2. Compute expression in right part:\n")
     mm.add_to_doc(module_path, right_part + " = " + format(right_result, '.2f') + '\n')
 
-    mm.add_to_doc(module_path, "Came to:\n")
+    mm.add_to_doc(module_path, "3. Came to:\n")
     mm.add_to_doc(module_path,
                   format(left_result, '.2f') + "x " + operation[0] + "  " + format(right_result, '.2f') + '\n')
 
-    mm.add_to_doc(module_path, "Result:\n")
+    mm.add_to_doc(module_path, "4. Result:\n")
     if left_result == 0:
         if right_result == 0:
             mm.add_to_doc(module_path, 'x is any')
         else:
             mm.add_to_doc(module_path, 'has no roots')
+
 
     result = ""
     inv_oper = ''

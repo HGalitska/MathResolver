@@ -56,6 +56,10 @@ def infix_to_postfix(infix_expr):
             # stack.push(token)
 
         if token not in OPERATORS:
+            try:
+                token = float(token)
+            except ValueError:
+                return None
             postfix_list.append(token)
         elif token == '(':
             stack.push(token)
@@ -79,30 +83,30 @@ def eval_postfix(postfix_expr, module_path):
 
     token_list = postfix_expr.split()
 
-    mm.add_to_doc(module_path, "\nCompute individual results:")
+    mm.add_to_doc(module_path, "\n1. Compute individual results:")
 
     for token in token_list:
-        if token not in OPERATORS:
-            operand_stack.push(float(token))
+        operand_stack.push(float(token))
+    else:
+        if OPERATORS[token][2] == 2:
+            operand2 = operand_stack.pop()
+            operand1 = operand_stack.pop()
+            result = eval_simple_operation(token, operand1, operand2)
+            mm.add_to_doc(module_path,
+                          "\n" + str(operand1) + " " + str(token) + " " + str(operand2) + " => " + str(result))
+            operand_stack.push(result)
         else:
-            if OPERATORS[token][2] == 2:
-                operand2 = operand_stack.pop()
-                operand1 = operand_stack.pop()
-                result = eval_simple_operation(token, operand1, operand2)
-                mm.add_to_doc(module_path,
-                              "\n" + str(operand1) + " " + str(token) + " " + str(operand2) + " => " + str(result))
-                operand_stack.push(result)
-            else:
-                operand = operand_stack.pop()
-                result = eval_simple_operation(token, operand)
-                mm.add_to_doc(module_path, "\n" + str(token) + "(" + str(operand) + ") => " + str(result))
-                operand_stack.push(result)
+            operand = operand_stack.pop()
+            result = eval_simple_operation(token, operand)
+            mm.add_to_doc(module_path, "\n" + str(token) + "(" + str(operand) + ") => " + str(result))
+            operand_stack.push(result)
 
     return operand_stack.pop()
 
 
 def eval_simple_operation(operation, *operands):
     if len(operands) == 1:
+        print(OPERATORS[operation][1])
         return float(format(OPERATORS[operation][1](operands[0]), '.2f'))
     return float(format(OPERATORS[operation][1](operands[0], operands[1]), '.2f'))
 
@@ -116,13 +120,13 @@ def solve(expression, log=True):
     postfix = infix_to_postfix(expression)
     if postfix is not None:
         result = eval_postfix(postfix, module_path)
-        mm.add_to_doc(module_path, "\nResult: " + format(result, '.2f'))
+        mm.add_to_doc(module_path, "\n2. Result: " + format(result, '.2f'))
         mm.close_doc_string(module_path, expr, expression)
         if log:
             mm.print_doc(module_path)
         return result
     else:
-        mm.clear_doc(module_path)
+        mm.delete_module(expr, module)
         print("Some error. Try again!")
 
 

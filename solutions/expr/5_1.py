@@ -1,4 +1,0 @@
-"""
-x + (
-
-Compute individual results:

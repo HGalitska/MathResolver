@@ -1,5 +1,4 @@
 from math import sqrt, trunc, copysign
-from numpy import roots
 
 import module_manager as mm
 import solutions.quadr_eq as quadr_eq
@@ -30,10 +29,10 @@ def solve(expression):
     b = abc[1]
     c = abc[2]
 
-    mm.add_to_doc(module_path, "Get coefficients:\n")
+    mm.add_to_doc(module_path, "1. Get coefficients:\n")
     mm.add_to_doc(module_path, "\na: " + str(a) + "\nb: " + str(b) + "\nc: " + str(c))
 
-    mm.add_to_doc(module_path, "\nCompute discriminant:\n")
+    mm.add_to_doc(module_path, "\n2. Compute discriminant:\n")
     d = b ** 2 - 4 * a * c
     mm.add_to_doc(module_path, "\nd = b^2 - 4 * a * c = "
                   + str(b) + "^2 - 4 * " + str(a) + " * " + str(c) + " = "
@@ -46,7 +45,7 @@ def solve(expression):
         return
 
     if d == 0:
-        mm.add_to_doc(module_path, "\nOnly one root:")
+        mm.add_to_doc(module_path, "\n3. Only one root:")
         sol = (-b) / (2 * a)
         mm.add_to_doc(module_path, "\nx1 = " + "(-b - sqrt(d)) / (2 * a) = " + format(sol, '.2f'))
         mm.close_doc_string(module_path, quadr_eq, expression)
@@ -56,9 +55,9 @@ def solve(expression):
     sol1 = (-b - sqrt(d)) / (2 * a)
     sol2 = (-b + sqrt(d)) / (2 * a)
 
-    mm.add_to_doc(module_path, "\nCompute first root:\n")
+    mm.add_to_doc(module_path, "\n4. Compute first root:\n")
     mm.add_to_doc(module_path, "\nx1 = " + "(-b - sqrt(d)) / (2 * a) = " + format(sol1, '.2f'))
-    mm.add_to_doc(module_path, "\nCompute second root:\n")
+    mm.add_to_doc(module_path, "\n5. Compute second root:\n")
     mm.add_to_doc(module_path, "\nx2 = " + "(-b + sqrt(d)) / (2 * a) = " + format(sol2, '.2f'))
 
     mm.close_doc_string(module_path, quadr_eq, expression)

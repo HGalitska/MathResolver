@@ -6,6 +6,17 @@ def add_new_module(package, module):
     package_init.close()
 
 
+def delete_module(package, module):
+    all_modules = [x for x in package.__all__ if x != module]
+
+    module_file = r'' + package.__name__.replace(".", "/") + "/" + module + ".py"
+    import os
+    os.remove(module_file)
+    package_init = open(r"" + package.__name__.replace(".", "/") + "/__init__.py", "w")
+    package_init.write("__all__ = " + str(all_modules))
+    package_init.close()
+
+
 def get_modules(package):
     return package.__all__
 
@@ -83,5 +94,5 @@ def print_doc(path):
 
 def clear_doc(path):
     module_file = open(path, "w")
-    module_file.write("")
+    module_file.write('"""')
     module_file.close()
