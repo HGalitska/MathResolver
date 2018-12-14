@@ -17,19 +17,7 @@ def who_is(expr):
         return 'expression with result.', 'expr'
 
 
-def do_work():
-
-    # get user input
-    expression = input("Enter mathematical expression.\n"
-                       "Put ' ' around every operation and operand.\n"
-                       "You can use mathematical functions with ONE argument like 'sqrt ( 4 )'.\n"
-                       "For simple ineq use '( expr ) x > expr' syntax.\n"
-                       "For ineq with parameter: "
-                       "( expr_x) x ( operation ) ( expr_a ) a >==< ( expr ) : [ min , max ].\n"
-                       "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
-                       "where a, b, c are actual numbers.\n\n"
-                       "To read from file enter 'FILE'.\n\n")
-
+def do_work(expression):
     print(expression)
 
     # if user wants to read expression from file
@@ -41,7 +29,8 @@ def do_work():
     # classify input expression
     description = who_is(expression)[0]
     type_id = who_is(expression)[1]
-    print('Expression is', description)
+    if type_id != 'expr':
+        print('Expression is', description)
 
     # import algorithms and solutions packages needed for input expression
     exec("import module_manager")
@@ -52,4 +41,15 @@ def do_work():
 
 
 if __name__ == "__main__":
-    do_work()
+    # get user input
+    expression = input("Enter mathematical expression.\n"
+                       "Put ' ' around every operation and operand.\n"
+                       "You can use mathematical functions with ONE argument like 'sqrt ( 4 )'.\n"
+                       "For simple ineq use '( expr ) x > expr' syntax.\n"
+                       "For ineq with parameter: "
+                       "( expr_x) x ( operation ) ( expr_a ) a >==< ( expr ) : [ min , max ].\n"
+                       "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
+                       "where a, b, c are actual numbers.\n\n"
+                       "To read from file enter 'FILE'.\n\n")
+
+    do_work(expression)

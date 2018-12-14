@@ -137,6 +137,7 @@ def solve(expression, log=True):
     postfix = infix_to_postfix(expression)
 
     if postfix is not None:
+        print("Expression is expression with result.")
         result = eval_postfix(postfix, module_path)
         mm.add_to_doc(module_path, "\n2. Result: " + format(result, '.2f'))
         mm.close_doc_string(module_path, expr, expression)
