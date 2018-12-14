@@ -1,9 +1,12 @@
+"""Module for solving mathematical expressions with result."""
+
 import module_manager as mm
 import solutions.expr as expr
 
 import math
 
 
+# stack class for reverse polish notation
 class Stack:
     def __init__(self):
         self.items = []
@@ -24,6 +27,7 @@ class Stack:
         return len(self.items)
 
 
+# operators available for use in expressions
 OPERATORS = {
     '+': [2, lambda x, y: x + y, 2],
     '-': [2, lambda a, b: a - b, 2],
@@ -36,23 +40,36 @@ OPERATORS = {
     ')': [1, 0, 0]
 }
 
+
+# getting mathematical expressions from math module
 MATH_FUNCTIONS = list(func for func in dir(math) if func[0] != '_')
 
 
+# convert infix expression to postfix expression for RPN
 def infix_to_postfix(infix_expr):
     stack = Stack()
     postfix_list = list()
     token_list = infix_expr.split()
 
     for token in token_list:
+
         if token in MATH_FUNCTIONS:
-            exec("from inspect import signature")
+            if token == "fsum":
+                print("We do not support functions with iterables.")
+                return None
             exec("from math import " + token + " as func")
-            exec("")
+            if isinstance(eval("func"), float):
+                postfix_list.append(eval("func"))
+                continue
+
             exec("OPERATORS[token] = []")
             exec("OPERATORS[token].append(4)")
             exec("OPERATORS[token].append(func)")
-            exec("OPERATORS[token].append(len(signature(func).parameters) - 1)")
+            exec("OPERATORS[token].append(1)")
+
+            if OPERATORS[token][2] != 1:
+                print("Please use mathematical functions with exactly one argument.")
+                return None
 
         if token not in OPERATORS:
             try:
@@ -77,6 +94,7 @@ def infix_to_postfix(infix_expr):
     return " ".join(str(v) for v in postfix_list)
 
 
+# evaluate postfix expression
 def eval_postfix(postfix_expr, module_path):
     operand_stack = Stack()
 
@@ -117,6 +135,7 @@ def solve(expression, log=True):
     mm.open_doc_string(module_path, expression)
 
     postfix = infix_to_postfix(expression)
+
     if postfix is not None:
         result = eval_postfix(postfix, module_path)
         mm.add_to_doc(module_path, "\n2. Result: " + format(result, '.2f'))
@@ -124,6 +143,7 @@ def solve(expression, log=True):
         if log:
             mm.print_doc(module_path)
         return result
+    # if there is an error in expression, delete solution module
     else:
         mm.delete_module(expr, module)
         print("Some error. Try again!")
