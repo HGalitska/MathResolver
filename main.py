@@ -1,47 +1,55 @@
-import module_manager, importlib
+"""Main module of the project. Getting input from user and validating it."""
 
 
 def who_is(expr):
-    if 'x^2' in expr:
+    import re
+    if re.match(
+            r'([-+]?[0-9]*\.?[0-9]+)\s\*\sx\^2\s[+-]\s([-+]?[0-9]*\.?[0-9]+)\s\*\sx\s[+-]\s([-+]?[0-9]*\.?[0-9]+)\s=\s0',
+            expr):
         return 'quadratic equation.', 'quadr_eq'
-    elif 'a' in expr:
+    elif re.match(
+            r'\(\s+.+\s+\)\s+x\s+[+*/-]\s+\(\s+.+\s+\)\s+a\s+[><]=?\s+\(\s+.+\s+\)\s+:\s\[\s-?[0-9]*\s,\s-?[0-9]*\s\]',
+            expr):
         return 'inequality with parameter.', 'param_ineq'
-    elif '>' in expr or '<' in expr or '>=' in expr or '<=' in expr:
+    elif re.match(r'\(\s+.+\s+\)\s+x\s+[><]=?\s+.+', expr):
         return 'inequality.', 'ineq'
     else:
         return 'expression with result.', 'expr'
 
 
-def check_availability():
-    pass
+def do_work(expression):
+    print(expression)
 
-
-module = __name__
-
-
-def do_work():
-    expression = input("Enter mathematical expression.\n"
-                       "Put ' ' around every operation and operand.\n"
-                       "You can use mathematical functions like 'sqrt ( 4 )'.\n"
-                       "For simple ineq use 'x' as root to be find.\n"
-                       "For ineq with parameter use 'a' for parameter.\n"
-                       "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
-                       "where a, b, c are actual numbers.\n\n"
-                       "To read from file enter 'FILE'.\n\n")
-
+    # if user wants to read expression from file
     if expression == 'FILE':
         file = open('input.txt', 'r')
         expression = file.read()
         file.close()
 
+    # classify input expression
     description = who_is(expression)[0]
     type_id = who_is(expression)[1]
-    print('Expression is', description)
+    if type_id != 'expr':
+        print('Expression is', description)
 
+    # import algorithms and solutions packages needed for input expression
+    exec("import module_manager")
     exec("import algorithms." + type_id + " as algo_package")
     exec("import solutions." + type_id + " as solution_package")
     exec("solution = module_manager.find_solution(solution_package, expression)")
     exec("if solution is None: algo_package.solve(expression)")
 
 
-do_work()
+if __name__ == "__main__":
+    # get user input
+    expression = input("Enter mathematical expression.\n"
+                       "Put ' ' around every operation and operand.\n"
+                       "You can use mathematical functions with ONE argument like 'sqrt ( 4 )'.\n"
+                       "For simple ineq use '( expr ) x > expr' syntax.\n"
+                       "For ineq with parameter: "
+                       "( expr_x) x ( operation ) ( expr_a ) a >==< ( expr ) : [ min , max ].\n"
+                       "For quadratic equations use syntax 'a * x^2 + b * x + c = 0',"
+                       "where a, b, c are actual numbers.\n\n"
+                       "To read from file enter 'FILE'.\n\n")
+
+    do_work(expression)

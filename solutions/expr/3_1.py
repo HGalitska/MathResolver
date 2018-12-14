@@ -1,6 +1,12 @@
 """
-2 + 3
+inf
+-------------------------------------------------
 
-2.0+3.0 => 5.0
-result: 5.00
+1. Compute individual results:
+2. Result: inf
 """
+if __name__ == '__main__':
+    from algorithms.expr import solve
+
+    solve("inf")
+# -------------------------------------------------

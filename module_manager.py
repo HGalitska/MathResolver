@@ -6,6 +6,17 @@ def add_new_module(package, module):
     package_init.close()
 
 
+def delete_module(package, module):
+    all_modules = [x for x in package.__all__ if x != module]
+
+    module_file = r'' + package.__name__.replace(".", "/") + r"/" + module + r".py"
+    import os
+    os.remove(module_file)
+    package_init = open(r"" + package.__name__.replace(".", "/") + "/__init__.py", "w")
+    package_init.write("__all__ = " + str(all_modules))
+    package_init.close()
+
+
 def get_modules(package):
     return package.__all__
 
@@ -16,7 +27,7 @@ def generate_module_name(package, expression):
 
 
 def get_modules_for_expr(package, expression, prefix_flag=False):
-    prefix = str(len(expression.split())) + "_"
+    prefix = str(len(expression)) + "_"
     modules = get_modules(package)
     same_length_names = []
 
@@ -36,6 +47,8 @@ def find_solution(package, expression):
     for module_name in modules:
         module = importlib.import_module(package.__name__ + "." + module_name)
         doc = module.__doc__
+        if doc == "":
+            return None
         if expression in doc:
             print("Already have it!", doc)
             return doc
@@ -48,13 +61,17 @@ def get_path(package, module):
 
 def open_doc_string(path, expression):
     module_file = open(path, "w")
-    module_file.write('"""\n' + expression + '\n')
+    module_file.write('"""\n' + expression + '\n'
+                                             '-------------------------------------------------\n')
     module_file.close()
 
 
-def close_doc_string(path):
+def close_doc_string(path, package, expression):
     module_file = open(path, "a")
-    module_file.write('\n"""')
+    module_file.write('\n"""\n')
+    module_file.write("if __name__ == '__main__':\n")
+    module_file.write('    from ' + package.__name__.replace('solutions', 'algorithms') + ' import solve\n\n')
+    module_file.write('    solve("' + expression + '")\n# -------------------------------------------------\n')
     module_file.close()
 
 
@@ -66,6 +83,16 @@ def add_to_doc(path, string):
 
 def print_doc(path):
     module_file = open(path, "r")
-    print(module_file.read().replace('"""', ''))
+    lines = module_file.readlines()
+    for line in lines:
+        if line == "if __name__ == '__main__':\n":
+            module_file.close()
+            return
+        print(line.replace('"""', ''))
     module_file.close()
 
+
+def clear_doc(path):
+    module_file = open(path, "w")
+    module_file.write('"""')
+    module_file.close()
